@@ -21,3 +21,39 @@ export function getProducts(errorCallback) {
     }
   };
 }
+export function createProducts(product, errorCallback) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(`/products`, product);
+      if (response?.data) {
+        dispatch(getProducts());
+      }
+    } catch (error) {
+      errorCallback && errorCallback(error);
+    }
+  };
+}
+export function updateProducts(product, errorCallback) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.put(`/products/${product.id}`, product);
+      if (response?.data) {
+        dispatch(getProducts());
+      }
+    } catch (error) {
+      errorCallback && errorCallback(error);
+    }
+  };
+}
+export function deleteProducts(product, errorCallback) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.delete(`/products/${product.id}`);
+      if (response?.data) {
+        dispatch(getProducts());
+      }
+    } catch (error) {
+      errorCallback && errorCallback(error);
+    }
+  };
+}
