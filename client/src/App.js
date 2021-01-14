@@ -1,8 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect, useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import axios from "axios";
 
 function App() {
+  const [count, setCount] = useState();
+  const fetch = useCallback(async () => {
+    try {
+      const result = await axios.get("/products");
+      if (result?.data) setCount(result.data.length);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
   return (
     <div className="App">
       <header className="App-header">
@@ -10,14 +23,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        {count || "Cargando..."}
       </header>
     </div>
   );
