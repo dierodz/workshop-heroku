@@ -1,0 +1,36 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -L",
+    "forever": "forever index.js",
+    "test": "mocha -w ./tests/**/*.spec.js"
+  },
+  "author": "Dev5",
+  "license": "ISC",
+  "engines": {
+    "node": ">=12.18.3",
+    "npm": ">=6.14.6"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "ioredis": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.4",
+    "pg": "^8.3.0",
+    "sequelize": "^6.3.4"
+  },
+  "devDependencies": {
+    "supertest-session": "^4.0.0",
+    "mocha": "^8.1.1",
+    "chai": "^4.2.0",
+    "supertest": "^4.0.2"
+  }
+}
