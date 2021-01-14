@@ -1,31 +1,85 @@
-import React, { useCallback, useEffect, useState } from "react";
-import logo from "./logo.svg";
+import React, { useEffect } from "react";
+import {
+  ChakraProvider,
+  Box,
+  Grid,
+  theme,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  ButtonGroup,
+  IconButton,
+  Tbody,
+  Td,
+} from "@chakra-ui/react";
 import "./App.css";
-import axios from "axios";
-
+import HeaderComponent from "./components/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "./store/actions";
+import { IoAdd, IoPencil, IoTrash } from "react-icons/io5";
 function App() {
-  const [count, setCount] = useState();
-  const fetch = useCallback(async () => {
-    try {
-      const result = await axios.get("/products");
-      if (result?.data) setCount(result.data.length);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const dispatch = useDispatch();
+  const { products, loading } = useSelector((store) => store);
   useEffect(() => {
-    fetch();
+    dispatch(getProducts());
   }, [fetch]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        {count || "Cargando..."}
-      </header>
-    </div>
+    <ChakraProvider theme={theme}>
+      <Box textAlign="center">
+        <Grid
+          minH="100vh"
+          templateRows="auto 1fr"
+          templateColumns="auto 1fr"
+          p={"1rem 1.5rem"}
+        >
+          <HeaderComponent />
+          <Table gridColumn="1 / span 2">
+            <Thead>
+              <Tr>
+                <Th>Nombre:</Th>
+                <Th>Descripción:</Th>
+                <Th>Precio:</Th>
+                <Th>Stock:</Th>
+                <Th>
+                  <ButtonGroup isAttached>
+                    <IconButton
+                      aria-label="agregar"
+                      icon={<IoAdd />}
+                      variant="ghost"
+                    />
+                  </ButtonGroup>
+                </Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {products?.map((product) => (
+                <Tr key={product.id}>
+                  <Td>{product.name}</Td>
+                  <Td>{product.description}</Td>
+                  <Td>{product.price}</Td>
+                  <Td>{product.stock}</Td>
+                  <Td>
+                    <ButtonGroup isAttached>
+                      <IconButton
+                        aria-label="update"
+                        icon={<IoPencil />}
+                        variant="ghost"
+                      />
+                      <IconButton
+                        aria-label="delete"
+                        icon={<IoTrash />}
+                        variant="ghost"
+                      />
+                    </ButtonGroup>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Grid>
+      </Box>
+    </ChakraProvider>
   );
 }
 
