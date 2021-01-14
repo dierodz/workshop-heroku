@@ -29,8 +29,19 @@ let sequelize =
       );
 ```
 ``` js 
+conn.sync({ force: true }).then(() => {
+  server.listen(process.env.PORT, () => {
+    console.log("%s listening at 3000"); // eslint-disable-line no-console
+  });
+});
+```
+``` js 
 import dotenv from "dotenv";
 dotenv.config();
 
 axios.defaults.baseURL = process.env.REACT_APP_API || "http://localhost:3001";
 ```
+
+`https://github.com/timanovsky/subdir-heroku-buildpack`
+
+`PROJECT_PATH`
