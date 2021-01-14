@@ -24,8 +24,11 @@ export function getProducts(errorCallback) {
 export function createProducts(product, errorCallback) {
   return async (dispatch) => {
     try {
+      dispatch(setLoading(true));
       const response = await axios.post(`/products`, product);
       if (response?.data) {
+        dispatch(setLoading(false));
+
         dispatch(getProducts());
       }
     } catch (error) {

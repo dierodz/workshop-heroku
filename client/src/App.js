@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 import {
+  Button,
+  FormControl,
+  FormLabel,
   ChakraProvider,
   Box,
   Grid,
@@ -12,18 +15,29 @@ import {
   IconButton,
   Tbody,
   Td,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import "./App.css";
 import HeaderComponent from "./components/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "./store/actions";
-import { IoAdd, IoPencil, IoTrash } from "react-icons/io5";
+import { createProducts, getProducts } from "./store/actions";
+import { IoAdd, IoPencil, IoSend, IoTrash } from "react-icons/io5";
 function App() {
   const dispatch = useDispatch();
   const { products, loading } = useSelector((store) => store);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   useEffect(() => {
     dispatch(getProducts());
-  }, [fetch]);
+  }, [dispatch]);
   return (
     <ChakraProvider theme={theme}>
       <Box textAlign="center">
@@ -41,12 +55,15 @@ function App() {
                 <Th>Descripción:</Th>
                 <Th>Precio:</Th>
                 <Th>Stock:</Th>
-                <Th>
+                <Th textAlign="right">
                   <ButtonGroup isAttached>
                     <IconButton
                       aria-label="agregar"
                       icon={<IoAdd />}
                       variant="ghost"
+                      onClick={() => {
+                        onOpen();
+                      }}
                     />
                   </ButtonGroup>
                 </Th>
@@ -59,7 +76,7 @@ function App() {
                   <Td>{product.description}</Td>
                   <Td>{product.price}</Td>
                   <Td>{product.stock}</Td>
-                  <Td>
+                  <Td textAlign="right">
                     <ButtonGroup isAttached>
                       <IconButton
                         aria-label="update"
@@ -79,6 +96,76 @@ function App() {
           </Table>
         </Grid>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+        <ModalOverlay />
+        <Formik
+          initialValues={{ name: "", description: "", price: 0, stock: 0 }}
+          onSubmit={async (values) => {
+            dispatch(createProducts(values));
+            onClose();
+          }}
+        >
+          {({ submitForm, values, handleChange }) => (
+            <ModalContent>
+              <ModalHeader>Sugerencias</ModalHeader>
+              <ModalBody>
+                <Form>
+                  <FormControl id="name">
+                    <FormLabel>Nombre</FormLabel>
+                    <Input
+                      type="name"
+                      value={values.name}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormControl id="description">
+                    <FormLabel>Descripción</FormLabel>
+                    <Textarea
+                      type="body"
+                      value={values.description}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormControl id="price">
+                    <FormLabel>Precio</FormLabel>
+                    <Input
+                      type="price"
+                      value={values.price}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormControl id="stock">
+                    <FormLabel>Stock</FormLabel>
+                    <Input
+                      type="stock"
+                      value={values.stock}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                </Form>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="ghost"
+                  mr={3}
+                  onClick={onClose}
+                  isLoading={loading}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  colorScheme="yellow"
+                  rightIcon={<IoSend style={{ marginTop: "0.125rem" }} />}
+                  onClick={submitForm}
+                  isLoading={loading}
+                >
+                  Enviar
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          )}
+        </Formik>
+      </Modal>
     </ChakraProvider>
   );
 }
